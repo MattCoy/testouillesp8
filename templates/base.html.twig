@@ -1,12 +1,48 @@
+{# templates/layout.html.twig #}
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% block css %}
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('home') }}">Accueil</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('bonjour') }}">Bonjour</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('bonjourNom', {nom: 'toto'}) }}">Bonjour Toto</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('exercice1') }}">Comment allez vous?</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('exercice2') }}">Quelle heure est-il?</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('exercice3', {nom: 'toto', age:'33'}) }}">Bonjour Toto avec âge?</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+{% block content %}{% endblock %}
+{% block javascript %}{% endblock %}
+</body>
 </html>
