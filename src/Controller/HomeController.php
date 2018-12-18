@@ -16,7 +16,7 @@ class HomeController extends AbstractController
 {
 
     /**
-     * @Route("/")
+     * @Route("/", name="home")
      * @return Response
      */
     public function home(){
@@ -30,7 +30,7 @@ class HomeController extends AbstractController
     //...
 
     /**
-     * @Route("/bonjour")
+     * @Route("/bonjour", name="bonjour")
      * @return Response
      */
     public function bonjour()
@@ -47,6 +47,41 @@ class HomeController extends AbstractController
     public function cava(){
 
         return new Response('<html><body><strong>Bien merci!</strong></body></html>');
+
+    }
+
+    /**
+     * @Route("/exercice2/heure", name="exercice2")
+     */
+    public function quelleHeure(){
+        $date = new \DateTime(date('Y-m-d H:i:s'));
+        //on envoie une réponse
+        return $this->render('exercice2.html.twig',
+            array('maDate' => $date->format('H\hs'))
+        );
+    }
+
+    /**
+     * cette route va matcher /bonjour/nimportequeltexte
+     *
+     * @Route("/bonjour/{nom}", name="bonjourNom", requirements={"nom"="[a-z]+"})
+     *
+     * J'ai nommé ma route, ce qui me sera utile pour générer l'url ou faire des
+    redirections
+     */
+    public function bonjour2($nom){
+        //$nom est automatiquement envoyé en paramètre à notre méthode
+        //et contiendra tout ce qui suit /bonjour/
+        return $this->render('bonjour.html.twig', array('nom'=>$nom));
+    }
+
+    /**
+     * @Route("/testRedirect")
+     * cette route va rediriger vers home
+     */
+    public function testRedirect(){
+
+        return $this->redirectToRoute("home");
 
     }
 

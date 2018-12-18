@@ -9,5 +9,8 @@
         {# pour écrire un commentaire #}
         {# nom est disponible car on l'a passé en paramètre de la méthode render() dans le controleur #}
         {{ nom }}
+        <br>
+        <a href="{{ path('bonjour') }}">Bonjour</a>
+        <a href="{{ path('bonjourNom', {nom: "toto"}) }}">Bonjour Toto</a>
     </body>
 </html>
