@@ -85,4 +85,14 @@ class HomeController extends AbstractController
 
     }
 
+    /**
+     * @Route("exercice3/{age}/{nom}", name="exercice3", requirements={"age"="\d+", "nom"="[a-zA-Z]+"})
+     * @return Response
+     */
+    public function exercice3($age, $nom){
+
+        return $this->render("exercice3.html.twig", ['age'=>$age, 'pseudo'=>$nom]);
+
+    }
+
 }
