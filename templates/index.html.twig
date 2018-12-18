@@ -5,6 +5,14 @@
         <title>HomePage</title>
     </head>
     <body>
+    <nav>
+        <a href="{{ path('home') }}">Accueil</a>
+        <a href="{{ path('bonjour') }}">Bonjour</a>
+        <a href="{{ path('bonjourNom', {nom: 'toto'}) }}">Bonjour Toto</a>
+        <a href="{{ path('exercice1') }}">Comment allez vous?</a>
+        <a href="{{ path('exercice2') }}">Quelle heure est-il?</a>
+        <a href="{{ path('exercice3', {nom: 'toto', age:'33'}) }}">Bonjour Toto avec âge?</a>
+    </nav>
         <h1>Ceci est la page d'accueil</h1>
         {# pour écrire un commentaire #}
         {# nom est disponible car on l'a passé en paramètre de la méthode render() dans le controleur #}

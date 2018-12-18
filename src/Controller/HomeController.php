@@ -41,7 +41,7 @@ class HomeController extends AbstractController
     }
 
     /**
-     * @Route("/comment-allez-vous")
+     * @Route("/comment-allez-vous", name="exercice1")
      * @return Response
      */
     public function cava(){
@@ -91,7 +91,7 @@ class HomeController extends AbstractController
      */
     public function exercice3($age, $nom){
 
-        return $this->render("exercice3.html.twig", ['age'=>$age, 'pseudo'=>$nom]);
+        return $this->render("exercice3.html.twig", ['age'=>$age, 'nom'=>$nom]);
 
     }
 
