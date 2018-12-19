@@ -95,4 +95,40 @@ class HomeController extends AbstractController
 
     }
 
+    /*
+     * Créer une page pour la route exercice/genre/prix/produit
+	où genre et produit sont des placeholders qui doivent être uniquement constitués de lettres
+	et prix est uniquement constitué de chiffres
+
+
+	Si genre est différent de homme ou femme, renvoyer un message d'erreur de votre choix
+	Sinon, afficher un page avec le texte :
+	vous avez demandé : {produit}, prix {prix} € pour {genre}
+	et afficher une photo qui doit être une photo de femme si genre est femme et homme sinon
+
+	 */
+
+    /**
+     *@Route("exercice/{genre}/{prix}/{produit}", name="exoRecap", requirements={"genre"="[a-zA-Z]+", "prix"="[0-9]+", "produit"="[a-zA-Z]+"})
+     */
+
+    public function exoRecap($genre, $prix, $produit){
+
+        $message = '';
+
+        if(!in_array($genre, ['homme', 'femme'])){
+            $message = "genre invalide";
+        }
+
+        return $this->render('exoRecap.html.twig',
+            array('genre'=>$genre,
+                'prix'=>$prix,
+                'produit'=>$produit,
+                'message'=> $message
+            )
+        );
+
+    }
+
+
 }
