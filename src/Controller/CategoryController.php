@@ -73,42 +73,41 @@ class CategoryController extends AbstractController
      *     name="categorie_update",
      *     requirements={"id":"\d+"}
      * )
+     * $request va contenir les infos de la requête http et notamment $_GET ou $_POST
      */
-    public function updateCategorie(Category $category)
+    public function updateCategorie(Request $request, Category $categorie)
     {
-        /* Ici on utilise une fonctionnalité très utile de symfony : le ParamConverter
-        Alors que l'on devrait récupérer en argument $id, l'id de la catégorie,
-        on indique à Symfony que l'on veut récupérer l'entité Categorie:
-        le ParamConverter va comprendre cela et va lui même faire la requête find($id),
-        ce qui nous évite d'écrire:
-        $article = $this->getDoctrine()
-            ->getRepository(Categorie::class)
-            ->find($id);
-        Si aucun article n'est trouvé, une erreur 404 est générée.
-        */
+        //je crée mon formulaire à partir de mon objet $categorie
+        $form = $this->createForm(CategoryType::class, $categorie);
 
-        //Ensuite je peut modifier ma catégorie
-        $category->setLibelle('catégorie modifiée');
+        //je demande à mon objet Form de prendre en charge les données envoyées (contenues dans la requête HTTP)
+        $form->handleRequest($request);
 
-        //récupération du manager
-        $entityManager = $this->getDoctrine()->getManager();
+        //si le formulaire a été envoyé et si les données sont valides
+        if ($form->isSubmitted() && $form->isValid()) {
 
-        //ici pas besoin de faire $entityManager->persist($categorie);
-        //car doctrine a déjà en mémoire cette entité, puisqu'elle l'a récupéré dans la base
+            // ici on charge le formulaire de remplir notre objet catégorie avec ces données
+            $categorie = $form->getData();
 
-        $entityManager->flush();
-        //à ce moment, doctrine sait que $categorie existe déjà dans la base et va donc faire un update au lieu d'un insert !
+            // maintenant, on peut enregistrer la categorie modifiée
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($categorie);
+            $entityManager->flush();
 
-        //On va utiliser une autre fonctionnalité très utile de Symfony : les messages flashs:
-        // Ce sont des messages stockés en session et qui sont ensuite effaçés dès qu'ils sont affichés,
-        //de sorte qu'il n'apparaissent qu'une seule fois
-        $this->addFlash(
-            'success',
-            'Catégorie modifiée !'
-        );
+            //on crée un message flash
+            $this->addFlash(
+                'success',
+                'Catégorie modifiée !'
+            );
 
-        //on redirige sur la liste des 5 dernières catégories
-        return $this->redirectToRoute('categorie_last5');
+            //on renvoie sur la liste des catégories par exemple
+            return $this->redirectToRoute('categorie_last5');
+        }
+
+        //je passe en paramètre la "vue" du formulaire
+        return $this->render('category/add.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
     /**
