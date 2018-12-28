@@ -1,0 +1,42 @@
+security:
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
+
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    firewalls: #les firewall vont nous permettre de définir des pages accessibles uniquement aux utilisateurs connectés
+        dev: #ne pas toucher celui-ci, il permet juste d'acceder au webprofiler sur toutes les pages
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main: #le firewall sur lequel on va travailler
+            anonymous: true  #veut dire que le site est accessible aux utilisateurs non authentifiés
+            form_login:
+                login_path: login
+                check_path: login
+            logout:
+                path:   /logout
+                target: /
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+
+            # activate different ways to authenticate
+
+            # http_basic: true
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+
+            # form_login: true
+            # https://symfony.com/doc/current/security/form_login_setup.html
+
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
+    access_control:
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }

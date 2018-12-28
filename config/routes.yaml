@@ -5,3 +5,6 @@
 #Home:
 #    path: /bonjour
 #    controller: App\Controller\HomeController::bonjour
+
+logout:
+    path: /logout
