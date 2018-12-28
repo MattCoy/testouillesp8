@@ -3,35 +3,55 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Form\CategoryType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CategoryController extends AbstractController
 {
     /**
      * @Route("/categorie/add", name="categorie_add")
+     * $request va contenir les infos de la requête http et notamment $_GET ou $_POST
      */
-    public function addCategorie()
+    public function addCategorie(Request $request)
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        //je crée un nouvel objet Categorie
+        $categorie = new Category();
 
-        //je vais créer un boucle pour ajouter 10 catégories test
-        for ($i = 1; $i <= 10; $i++) {
+        //je crée mon formulaire à partir de cette classe
+        $form = $this->createForm(CategoryType::class, $categorie);
 
-            $categorie = new Category();
+        //je demande à mon objet Form de prendre en charge les données envoyées (contenues dans la requête HTTP)
+        $form->handleRequest($request);
 
-            $categorie->setLibelle('catégorie' . $i);
+        //si le formulaire a été envoyé et si les données sont valides
+        if ($form->isSubmitted() && $form->isValid()) {
 
-            //je met en mémoire mes objets, pour l'instant aucune requête n'est exécutée
+            // $form->getData() contient les données envoyées
+
+            // ici on charge le formulaire de remplir notre objet catégorie avec ces données
+            $categorie = $form->getData();
+
+            // maintenant, on peut enregistrer cette nouvelle catégorie
+            $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($categorie);
+            $entityManager->flush();
 
+            //on crée un message flash
+            $this->addFlash(
+                'success',
+                'Catégorie ajoutée !'
+            );
+
+            //on renvoie sur la liste des catégories par exemple
+            return $this->redirectToRoute('categorie_last5');
         }
 
-        //on dit à doctrine d'exécuter toutes les requêtes
-        //les catégories sont insérées dans la table
-        $entityManager->flush();
-
-        return $this->render('category/add.html.twig');
+        //je passe en paramètre la "vue" du formulaire
+        return $this->render('category/add.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
 

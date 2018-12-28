@@ -4,6 +4,9 @@
 
 {% block content %}
 
-    <h1>Catégorie ajoutée ✅</h1>
+    <h1>Ajout de catégorie</h1>
+    {{ form_start(form) }}  {# permet de créer la balise <form> #}
+    {{ form_widget(form) }} {# va générer les champs #}
+    {{ form_end(form) }}    {# permet de fermer la balise <form> en plus d'autres choses..., voir la doc #}
 
 {% endblock %}
