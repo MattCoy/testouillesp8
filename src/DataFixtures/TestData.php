@@ -69,7 +69,8 @@ class TestData extends Fixture
             $user = new User();
             $user->setUsername('toto' . $i);
             $user->setEmail('toto' . $i . '@toto.to');
-            $user->setRoles(['ROLE_USER']);
+            $roles = $i === 1 ? ['ROLE_USER', "ROLE_ADMIN"] : ['ROLE_USER'];
+            $user->setRoles($roles);
             //on définit un mot de passe
             $plainPassword = 'toto' . $i;
             //on l'encode

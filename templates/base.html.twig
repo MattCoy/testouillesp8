@@ -32,6 +32,12 @@
             <li class="nav-item">
                 <a class="nav-link"  href="{{ path('categorie_last5') }}">Catégories récentes</a>
             </li>
+            {# cet élément de menu n'apparaitra que si l'utilisateur est connecté et a le ROLE_ADMIN #}
+            {% if is_granted('ROLE_ADMIN') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('adminHome') }}">Zone admin</a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 </nav>
