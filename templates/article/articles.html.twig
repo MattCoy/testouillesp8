@@ -4,6 +4,17 @@
 
 {% block content %}
     {#{{ dump(articles) }}#}
+
+    {# pour afficher tout type de message flash #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {# affichage des articles #}
     <ul>
     {% for article in articles %}
         <li>{{ article.title }} publié le {{ article.datepubli|date('d/m/Y') }}</li>

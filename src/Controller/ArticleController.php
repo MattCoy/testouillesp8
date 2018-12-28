@@ -93,4 +93,63 @@ class ArticleController extends AbstractController
         ));
 
     }
+
+    /**
+     * @Route("/article/update/{id}",
+     *     name="article_update",
+     *     requirements={"id":"\d+"}
+     * )
+     */
+    public function updateArticle(Article $article)
+    {
+        // le ParamConverter convertit automatiquement l'id en objet Article
+
+        //Ensuite je peut modifier mon article
+        $article->setTitle('titre modifié');
+
+        //récupération du manager
+        $entityManager = $this->getDoctrine()->getManager();
+
+        //ici pas besoin de faire $entityManager->persist($article);
+        //car doctrine a déjà en mémoire cette entité, puisqu'il l'a récupéré dans la base
+
+        $entityManager->flush();
+        //à ce moment, doctrine sait que $article existe déjà dans la base et va donc faire un update au lieu d'un insert !
+
+        //message flash
+        $this->addFlash(
+            'success',
+            'Article modifié !'
+        );
+
+        //on redirige sur la liste des 5 derniers articles
+        return $this->redirectToRoute('showAllArticles');
+    }
+
+    /**
+     * @Route("/article/delete/{id}",
+     *     name="article_delete",
+     *     requirements={"id":"\d+"}
+     * )
+     */
+    public function deleteArticle(Article $article)
+    {
+        // le ParamConverter convertit automatiquement l'id en objet Article
+
+        //récupération du manager
+        $entityManager = $this->getDoctrine()->getManager();
+
+        //Je veux supprimer cet article
+        $entityManager->remove($article);
+
+        //j'execute les requêtes
+        $entityManager->flush();
+        $this->addFlash(
+            'warning',
+            'Article supprimé !'
+        );
+
+        //on redirige sur la liste des 5 derniers articles
+        return $this->redirectToRoute('showAllArticles');
+    }
 }
