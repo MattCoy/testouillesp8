@@ -18,8 +18,8 @@ security:
         main: #le firewall sur lequel on va travailler
             anonymous: true  #veut dire que le site est accessible aux utilisateurs non authentifiés
             form_login:
-                login_path: login
-                check_path: login
+                login_path: app_login
+                check_path: app_login
             logout:
                 path:   /logout
                 target: /
