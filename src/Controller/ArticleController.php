@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Form\ArticleType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ArticleController extends AbstractController
@@ -11,20 +13,38 @@ class ArticleController extends AbstractController
     /**
      * @Route("/article/add", name="addArticle")
      */
-    public function addArticle()
+    public function addArticle(Request $request)
     {
 
-        $entityManager = $this->getDoctrine()->getManager();
         $article = new Article();
-        $article->setTitle('oula');
-        $article->setContent('contenu top');
-        $article->setDatePubli(new \DateTime(date('Y-m-d H:i:s')));
-        $article->setAuthor('Matthieu');
-        $entityManager->persist($article);
-        $entityManager->flush();
-        return $this->render('article/add.html.twig', [
-            'article' => $article,
-        ]);
+        $form = $this->createForm(ArticleType::class, $article);
+
+        $form->handleRequest($request);
+
+        //si le formulaire a été envoyé et si les données sont valides
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // ici on charge le formulaire de remplir notre objet article avec ces données
+            $article = $form->getData();
+
+            // maintenant, on peut enregistrer ce nouvel article
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($article);
+            $entityManager->flush();
+
+            //on crée un message flash
+            $this->addFlash(
+                'success',
+                'Article ajouté !'
+            );
+
+            //on renvoie sur la liste des catégories par exemple
+            return $this->redirectToRoute('showAllArticles');
+        }
+
+        return $this->render('article/add.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
     /**
@@ -100,30 +120,45 @@ class ArticleController extends AbstractController
      *     requirements={"id":"\d+"}
      * )
      */
-    public function updateArticle(Article $article)
+    public function updateArticle(Article $article, Request $request)
     {
         // le ParamConverter convertit automatiquement l'id en objet Article
 
-        //Ensuite je peut modifier mon article
-        $article->setTitle('titre modifié');
+        $form = $this->createForm(ArticleType::class, $article);
 
-        //récupération du manager
-        $entityManager = $this->getDoctrine()->getManager();
+        $form->handleRequest($request);
 
-        //ici pas besoin de faire $entityManager->persist($article);
-        //car doctrine a déjà en mémoire cette entité, puisqu'il l'a récupéré dans la base
+        //si le formulaire a été envoyé et si les données sont valides
+        if ($form->isSubmitted() && $form->isValid()) {
 
-        $entityManager->flush();
-        //à ce moment, doctrine sait que $article existe déjà dans la base et va donc faire un update au lieu d'un insert !
+            // ici on charge le formulaire de remplir notre objet article avec ces données
+            $article = $form->getData();
 
-        //message flash
-        $this->addFlash(
-            'success',
-            'Article modifié !'
-        );
+            //message flash
+            $this->addFlash(
+                'success',
+                'Article modifié !'
+            );
+            // maintenant, on peut enregistrer ce nouvel article
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->flush();
+
+            //on crée un message flash
+            $this->addFlash(
+                'success',
+                'Article modifié !'
+            );
+
+            //on renvoie sur la liste des catégories par exemple
+            return $this->redirectToRoute('showAllArticles');
+        }
+
+        return $this->render('article/add.html.twig', array(
+            'form' => $form->createView(),
+        ));
 
         //on redirige sur la liste des 5 derniers articles
-        return $this->redirectToRoute('showAllArticles');
+        return $this->redirectToRoute('articles_showAll');
     }
 
     /**
