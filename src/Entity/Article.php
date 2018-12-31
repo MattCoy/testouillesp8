@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ArticleRepository")
@@ -52,6 +53,12 @@ class Article
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
+
+    /**
+     * @Gedmo\Slug(fields={"title"})
+     * @ORM\Column(length=128, unique=true)
+     */
+    private $slug;
 
     public function getId(): ?int
     {
@@ -104,5 +111,10 @@ class Article
         $this->user = $user;
 
         return $this;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
     }
 }

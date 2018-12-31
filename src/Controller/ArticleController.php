@@ -78,6 +78,19 @@ class ArticleController extends AbstractController
     }
 
     /**
+     * @Route("/article/{slug}",
+     * name="showArticleWithSlug",
+     * requirements={"slug":"[\w-]+"}
+     * )
+     */
+    public function showWithSlug(Article $article)
+    {
+
+        return $this->render('article/article.html.twig',
+            array('article'=>$article));
+    }
+
+    /**
      * @Route("/articles",
      * name="showAllArticles",
      * )
