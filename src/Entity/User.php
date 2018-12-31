@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -51,9 +53,22 @@ class User implements UserInterface
      */
     private $username;
 
+    /**
+     * on indique a doctrine la relation OneToMany
+     * orphanRemoval=true permet de dire a doctrine de supprimer définitivement l'article s'il n'a plus d'auteur
+     * @ORM\OneToMany(targetEntity="App\Entity\Article", mappedBy="user", orphanRemoval=true)
+     * ( ceci ne va pas rajouter de champ à la table )
+     */
+    private $articles;
+
     public function __construct()
     {
         $this->roles = array('ROLE_USER');
+
+        //on initialise la propriété articles lors de l'instanciation
+        //ArrayCollection se comporte à peu près comme un tableau
+        $this->articles = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -149,6 +164,35 @@ class User implements UserInterface
     {
         $this->username = $username;
 
+        return $this;
+    }
+
+    /**
+     * @return Collection|Article[]
+     * permet de récupérer les articles
+     */
+    public function getArticles(): Collection
+    {
+        return $this->articles;
+    }
+
+    public function addArticle(Article $article): self
+    {
+        if (!$this->articles->contains($article)) {
+            //on rajoute l'article s'il n'est pas déjà présent
+            $this->articles[] = $article;
+            //Important : on met à jour l'objet Article en lui donnant un auteur
+            $article->setUser($this);
+        }
+        return $this;
+    }
+    public function removeArticle(Article $article): self
+    {
+        if ($this->articles->contains($article)) {
+            //si l'article est bien lié à cet utilisateur
+            //on l'enlève de la liste des articles de cet utilisateur
+            $this->articles->removeElement($article);
+        }
         return $this;
     }
 }

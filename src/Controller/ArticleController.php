@@ -27,6 +27,9 @@ class ArticleController extends AbstractController
             // ici on charge le formulaire de remplir notre objet article avec ces données
             $article = $form->getData();
 
+            //l'utilisateur connecté est l'auteur de l'article
+            $article->setUser($this->getUser());
+
             // maintenant, on peut enregistrer ce nouvel article
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($article);

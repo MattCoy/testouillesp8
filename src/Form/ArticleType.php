@@ -17,7 +17,6 @@ class ArticleType extends AbstractType
             ->add('title', TextType::class, array('label'=>'Titre de l\'article'))
             ->add('content', TextareaType::class, array('label'=>'Contenu de l\'article'))
             ->add('date_publi', DateTimeType::class, array('label'=>'Date de publication'))
-            ->add('author', TextType::class, array('label'=>'Auteur'))
             ->add('save', SubmitType::class, array('label' => 'enregistrer',
                 'attr' => ['class' => 'btn btn-primary']))
         ;

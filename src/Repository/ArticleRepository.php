@@ -9,7 +9,6 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 /**
  * @method Article|null find($id, $lockMode = null, $lockVersion = null)
  * @method Article|null findOneBy(array $criteria, array $orderBy = null)
- * @method Article[]    findAll()
  * @method Article[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ArticleRepository extends ServiceEntityRepository
@@ -59,8 +58,10 @@ class ArticleRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = '
-        SELECT * FROM article a
+        $sql = 'SELECT a.id as idArticle, title,
+        content, date_publi, u.*
+        FROM article a
+        INNER JOIN user u ON a.user_id = u.id
         WHERE a.date_publi > :date_post
         ORDER BY a.date_publi ASC
         ';
@@ -82,11 +83,33 @@ class ArticleRepository extends ServiceEntityRepository
         //avec cette méthode, l'objet $querybuilder crée sait automatiquement qu'il doit chercher
         //dans la table article, la première ligne permet de définir un alias, par convention a (la première lettre de la table)
         $querybuilder = $this->createQueryBuilder('a')
+            // a.user fait référence à la propriété user de l'entité article
+            ->innerJoin('a.user', 'u')
+            // on récupère les données de l'utilisateur associé pour éviter des requêtes supp
+            ->addSelect('u')
             ->andWhere('a.date_publi > :date_post')
             ->setParameter('date_post', $date_post)
             ->orderBy('a.date_publi', 'ASC')
             ->getQuery();
 
+        return $querybuilder->execute();
+    }
+
+    /*
+    * On réécrit findAll() en faisant la jointure de façon à récupérer les infos
+    de l'auteur
+    * de l'article en une seule requête
+    */
+    public function findAll(){
+        $querybuilder = $this->createQueryBuilder('a')
+            //on fait la jointure
+            // a.user fait référence à la propriété user de l'entité article
+            ->innerJoin('a.user', 'u')
+            // on récupère les données de l'utilisateur associé pour éviter des requêtes supp
+            ->addSelect('u')
+            //on trie par date de publication ... pourquoi pas
+            ->orderBy('a.date_publi', 'DESC')
+            ->getQuery();
         return $querybuilder->execute();
     }
 }

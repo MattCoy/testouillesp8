@@ -17,7 +17,7 @@
     {# affichage des articles #}
     <ul>
     {% for article in articles %}
-        <li>{{ article.title }} publié le {{ article.datepubli|date('d/m/Y') }}</li>
+        <li>{{ article.title }} publié par {{ article.user.username }} le {{ article.datepubli|date('d/m/Y') }}</li>
     {% endfor %}
     </ul>
 
