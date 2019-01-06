@@ -4,6 +4,11 @@
 
 {% block content %}
 
-{{ dump(article) }}
+    <h1>{{ article.title }}</h1>
+    <small> publié par {{ article.user.username }}php  le {{ article.datepubli|
+        date('d/m/Y') }}</small>
+    {% if article.image %}<img src="{{ asset('uploads/articles/images/' ~
+        article.image) }}">{% endif %}
+    <p>{{ article.content }}</p>
 
 {% endblock %}

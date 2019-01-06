@@ -60,6 +60,13 @@ class Article
      */
     private $slug;
 
+    /**
+     * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Envoyez une image pour illustrer cet article svp.")
+     * @Assert\Image
+     */
+    private $image;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -116,5 +123,17 @@ class Article
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+
+        return $this;
     }
 }

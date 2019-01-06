@@ -27,6 +27,22 @@ class ArticleController extends AbstractController
             // ici on charge le formulaire de remplir notre objet article avec ces données
             $article = $form->getData();
 
+            // $files va contenir l'image envoyée
+            $file = $article->getImage();
+
+            //on génère un nouveau nom
+            $fileName = md5(uniqid()).'.'.$file->guessExtension();
+
+            // on met à jour la propriété image, qui doit contenir le nom
+            // et pas l'image elle même
+            $article->setImage($fileName);
+
+            //on transfère le fichier sur le serveur
+            $file->move(
+                $this->getParameter('articles_image_directory'),
+                $fileName
+            );
+
             //l'utilisateur connecté est l'auteur de l'article
             $article->setUser($this->getUser());
 
