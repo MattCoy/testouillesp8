@@ -157,7 +157,7 @@ class ArticleController extends AbstractController
      */
     public function updateArticle(Article $article, Request $request, FileUploader $fileUploader)
     {
-        // le ParamConverter convertit automatiquement l'id en objet Article
+        $this->denyAccessUnlessGranted('edit', $article);
 
         //on stocke le nom du fichier image au cas où aucun fichier n'ai été envoyé
         $fileName = $article->getImage();
